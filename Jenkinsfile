@@ -37,6 +37,7 @@ pipeline {
             '''
           }
         }
+        
         stage('Deploy') {
     agent {
         docker {
@@ -46,17 +47,15 @@ pipeline {
     }
     steps {
         sh '''
-            npm install netlify-cli
+            echo "Deploying to Netlify: $NETLIFY_SITE_ID"
 
-            node_modules/.bin/netlify --version
+            ./node_modules/.bin/netlify --version
 
-            echo "Linking Netlify site: $NETLIFY_SITE_ID"
+            ./node_modules/.bin/netlify link --id "$NETLIFY_SITE_ID"
 
-            node_modules/.bin/netlify link --id "$NETLIFY_SITE_ID"
+            ./node_modules/.bin/netlify status
 
-            node_modules/.bin/netlify status
-
-            node_modules/.bin/netlify deploy --dir=build --prod
+            ./node_modules/.bin/netlify deploy --dir=build --prod
         '''
     }
 }
